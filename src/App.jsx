@@ -7,32 +7,19 @@ import logoImg from './assets/logo.png';
 import AvailablePlaces from './components/AvailablePlaces.jsx';
 
 import {getUserPlaces, updateUserPlaces} from './utilities.js';
+import useFetch from './Hooks/usefetch.js';
 
 function App() {
   const selectedPlace = useRef();
 
-  const [userPlaces, setUserPlaces] = useState([]);
+ 
 
 const [updatingError,setUpdatingError]=useState(null)
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
 
+  const {data:userPlaces,setData:setUserPlaces,error}=useFetch(getUserPlaces,[])
 
-
-useEffect(()=>{
-async function fetchUserPlaces(){
-
-  try{
-  const respPlaces=await getUserPlaces()
-setUserPlaces(respPlaces)
-}
-  catch(error){
-     setUpdatingError({message:error.message||"failed to get user places"})
-  }
-}
-fetchUserPlaces()
-  
-},[])
  
   function handleStartRemovePlace(place) {
     setModalIsOpen(true);
@@ -43,7 +30,7 @@ fetchUserPlaces()
     setModalIsOpen(false);
   }
 
-  async function handleSelectPlace(selectedPlace) {
+  const handleSelectPlace = useCallback(async function handleSelectPlace(selectedPlace) {
     setUserPlaces((prevPickedPlaces) => {
       if (!prevPickedPlaces) {
         prevPickedPlaces = [];
@@ -61,7 +48,10 @@ await updateUserPlaces([selectedPlace,...userPlaces])
 setUserPlaces(userPlaces)
 setUpdatingError({message:error.message||"error in updating"})
   }
-  }
+  },[])
+
+
+
 
   const handleRemovePlace = useCallback(async function handleRemovePlace() {
     setUserPlaces((prevPickedPlaces) =>

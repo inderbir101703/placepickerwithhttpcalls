@@ -16,7 +16,8 @@ export  async function getUserPlaces(){
     }
     return data.places
 }
-export  async function updateUserPlaces(places){
+
+   export  async function updateUserPlaces(places){
 
     const resp= await fetch('http://localhost:3000/user-places',{
         method:'PUT',
